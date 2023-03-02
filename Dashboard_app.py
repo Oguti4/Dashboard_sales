@@ -24,7 +24,7 @@ from dash.dependencies import Input, Output
 
 
 ALL_DATA=pd.read_csv('Datos/PROYECCIONES.csv', encoding='latin-1')
-BASE=pd.read_csv('BASE.csv', encoding='latin-1')
+BASE=pd.read_csv('Datos/BASE.csv', encoding='latin-1')
 
 
 # In[20]:
