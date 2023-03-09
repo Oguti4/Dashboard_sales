@@ -203,14 +203,14 @@ def update_graph(recurso,cobertura):
         mode = "number+delta",
         value = int(anterior),
         title = {"text": "Anterior vs Proyección<br>"},
-        delta = {'reference': num1 , 'relative': True,"valueformat": ".1f"},
+        delta = {'reference': num1 , 'relative': True,"valueformat": ".2f"},
         domain = {'x': [0.4, .7], 'y': [.57, .99]}))
 
     fig.add_trace(go.Indicator(
         mode = "number+delta",
         value = int(anterior_menos1),
         title = {"text": "Anterior_menos1 vs Proyección<br>"},
-        delta = {'reference': num2, 'relative': True,"valueformat": ".1f"},
+        delta = {'reference': num2, 'relative': True,"valueformat": ".2f"},
         domain = {'x': [0.4,.7], 'y': [.01, .50]}))
     fig.update_layout(title='Comparativo a '+str(cobertura)+' Semanas',height=400)
     return fig
