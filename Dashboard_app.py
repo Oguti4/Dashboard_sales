@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[18]:
+# In[35]:
 
 
 import pandas as pd
@@ -20,21 +20,21 @@ import plotly.express as px
 from dash.dependencies import Input, Output
 
 
-# In[19]:
+# In[36]:
 
 
 ALL_DATA=pd.read_csv('Datos/PROYECCIONES.csv', encoding='latin-1')
 BASE=pd.read_csv('Datos/BASE.csv', encoding='latin-1')
 
 
-# In[20]:
+# In[37]:
 
 
 ALL_DATA=ALL_DATA[['ds', 'yhat', 'yhat_lower', 'yhat_upper', 'RECURSO']]
 BASE=BASE[['ds', 'y','RECURSO']]
 
 
-# In[25]:
+# In[38]:
 
 
 ANTES=pd.read_csv('Datos/ANTES.csv', encoding='latin-1')
@@ -44,14 +44,14 @@ ANTES['CLUSTER']='BASE'
 DESPUES['CLUSTER']='SE AGRUPARON'
 
 
-# In[26]:
+# In[39]:
 
 
 BASE['PERIODO']=BASE['ds'].str.split('-', expand=True)[0]
 ALL_DATA['PERIODO']=ALL_DATA['ds'].str.split('-', expand=True)[0]
 
 
-# In[27]:
+# In[40]:
 
 
 INFO_GENERAL=pd.read_csv('Datos/GENERAL.csv', encoding='latin-1')
@@ -63,7 +63,7 @@ INFO_GENERAL=pd.read_csv('Datos/GENERAL.csv', encoding='latin-1')
 
 
 
-# In[57]:
+# In[43]:
 
 
 #VALID_USERNAME_PASSWORD_PAIRS = {
@@ -195,22 +195,24 @@ def update_graph(recurso,cobertura):
     anterior_menos1=BASE[(BASE['PERIODO']=='2021')&(BASE['RECURSO']==recurso)].head(cobertura)[['y']].sum()
     anterior=BASE[(BASE['PERIODO']=='2022')&(BASE['RECURSO']==recurso)].head(cobertura)[['y']].sum()
     proyeccion=ALL_DATA[(ALL_DATA['PERIODO']=='2023')&(ALL_DATA['RECURSO']==recurso)].head(cobertura)[['yhat']].sum()
+    num1=int(anterior)*int(anterior)/int(proyeccion)
+    num2=int(anterior_menos1)*int(anterior_menos1)/int(proyeccion)
     
     fig = go.Figure()
     fig.add_trace(go.Indicator(
         mode = "number+delta",
-        value = int(anterior_menos1),
+        value = int(anterior),
         title = {"text": "Anterior vs Proyección<br>"},
-        delta = {'reference': int(proyeccion) , 'relative': True,"valueformat": ".2f"},
+        delta = {'reference': num1 , 'relative': False,"valueformat": ".1f"},
         domain = {'x': [0.4, .7], 'y': [.57, .99]}))
 
     fig.add_trace(go.Indicator(
         mode = "number+delta",
-        value = int(anterior),
+        value = int(anterior_menos1),
         title = {"text": "Anterior_menos1 vs Proyección<br>"},
-        delta = {'reference': int(proyeccion), 'relative': True,"valueformat": ".2f"},
+        delta = {'reference': num2, 'relative': False,"valueformat": ".1f"},
         domain = {'x': [0.4,.7], 'y': [.01, .50]}))
-    fig.update_layout(title='Volumen en periodos anteriores - '+str(cobertura)+' Semanas',height=400)
+    fig.update_layout(title='Comparativo a '+str(cobertura)+' Semanas',height=400)
     return fig
 
 @app.callback(
